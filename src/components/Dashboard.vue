@@ -1,58 +1,40 @@
-<script>
-import { computed, onMounted } from "vue";
-import { useStore } from "vuex";
-import LineChart from "./LineChart.vue";
-import Button from 'primevue/button';
+<script setup lang="ts">
 
-export default {
-  components: { LineChart },
-  setup() {
-    const store = useStore();
-    onMounted(() => {
-      store.dispatch("fetchCryptoData");
-      store.dispatch("fetchHistoricalData");
-    });
+import TrendingCryptos from '@/components/TrendingCryptos.vue';
+import CardCryptoList from "@/components/CardCryptoList.vue";
 
-    return {
-      cryptoData: computed(() => store.state.cryptoData),
-      chartData: computed(() => ({
-        labels: store.state.historicalData.map(data => new Date(data[0]).toLocaleDateString()),
-        datasets: [{
-          label: "Prix Bitcoin",
-          data: store.state.historicalData.map(data => data[1]),
-          borderColor: "rgba(54, 162, 235, 1)",
-          fill: false
-        }]
-      }))
-    };
-  }
-};
 </script>
 
 <template>
   <div class="dashboard">
-    <h1>Crypto Dashboard</h1>
-
-    <div class="cards">
-      <div v-for="(price, coin) in cryptoData" :key="coin" class="card">
-        <h2>{{ coin.toUpperCase() }}</h2>
-        <p>${{ price.usd }}</p>
-      </div>
+    <div class="dashboard-content">
+      <CardCryptoList />
+      <TrendingCryptos />
     </div>
-
-    <Button label="Test"></Button>
-
-    <h2>Évolution du Bitcoin</h2>
-    <LineChart :chart-data="chartData" />
   </div>
 </template>
 
+
 <style>
-.dashboard {
-  text-align: center;
+.buttons {
+  margin-bottom: 20px;
+}
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 14px;
+  background: #42a5f5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+button:hover {
+  background: #1e88e5;
 }
 .cards {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
 }
@@ -60,6 +42,18 @@ export default {
   background: #282c34;
   padding: 20px;
   border-radius: 10px;
-  color: white;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+.crypto-logo {
+  width: 50px;
+  height: 50px;
+}
+.positive {
+  color: #4caf50;
+}
+.negative {
+  color: #ff5252;
 }
 </style>
